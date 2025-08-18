@@ -1,4 +1,4 @@
-# Reconstructor do 3-channel multiplexed photometric stereo
+# Reconstructor performs 3-channel multiplexed photometric stereo.
 import torch
 
 class Reconstructor:

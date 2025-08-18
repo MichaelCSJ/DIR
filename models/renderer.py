@@ -1,7 +1,3 @@
-# This code is for rendering images using data from 'dataset.py'
-# LightDeskRenderer compute Cook-Torrance brdf model
-
-from models.dataset import *
 import torch
 import torch.nn.functional as F
 

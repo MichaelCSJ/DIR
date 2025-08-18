@@ -14,7 +14,7 @@ import warnings
 
 from models.renderer import *
 from models.reconstructor import *
-from models.utils import compute_light_direction, compute_ptcloud_from_depth
+from utils.utils import compute_light_direction, compute_ptcloud_from_depth
 
 warnings.filterwarnings("ignore", category=FutureWarning)
 warnings.filterwarnings("ignore", category=UserWarning, module="matplotlib")
@@ -29,11 +29,8 @@ class Trainer():
         self.total_step = 1
         self.softmax = torch.nn.Softmax(dim=1)
 
-        # Load monitor 
-        if opt.load_monitor_light:
-            self.display_pattern = torch.nn.Parameter(torch.load(opt.light_fn))
-        else:
-            self.display_pattern = self.opt.illums.clone().detach()
+        # Load display pattern 
+        self.display_pattern = self.opt.illums.clone().detach()
             
         # Optimization variable parameterization
         self.monitor_OLAT_pos = self.opt.light_pos.clone().detach().to(self.device)
@@ -129,14 +126,6 @@ class Trainer():
 
         return 
     
-    def depth_to_normal(self, ptcloud):
-        output = torch.zeros_like(ptcloud)
-        dx = torch.cat([ptcloud[2:, 1:-1] - ptcloud[:-2, 1:-1]], dim=0)
-        dy = torch.cat([ptcloud[1:-1, 2:] - ptcloud[1:-1, :-2]], dim=1)
-        normal_map = F.normalize(torch.cross(dx, dy, dim=-1), dim=-1, eps=1e-6)
-        output[1:-1, 1:-1, :] = normal_map
-        return output
-
     def reconstruct_one_step(self, mask, OLAT_main):
         (B, H, W, N, R, C, num_basis_BRDFs) = self.dimensions
         
@@ -289,10 +278,19 @@ class Trainer():
         model_results['OLAT'] = loss_dict['OLAT']
         return model_results['OLAT'].item()
       
+          
     def save_N_display(self, iter, mask, OLAT_main):
         (B, H, W, N, R, C, num_basis_BRDFs) = self.dimensions
         device = self.device
         iter_str = str(iter).zfill(5)
+        
+        def depth_to_normal(ptcloud):
+            output = torch.zeros_like(ptcloud)
+            dx = torch.cat([ptcloud[2:, 1:-1] - ptcloud[:-2, 1:-1]], dim=0)
+            dy = torch.cat([ptcloud[1:-1, 2:] - ptcloud[1:-1, :-2]], dim=1)
+            normal_map = F.normalize(torch.cross(dx, dy, dim=-1), dim=-1, eps=1e-6)
+            output[1:-1, 1:-1, :] = normal_map
+            return output
         
         def gamma(img):
             return img**(1/2.2)
@@ -334,7 +332,7 @@ class Trainer():
         depth = self.depth[0]
         coeff_map    = self.softmax(self.coeff_map)
         basis_da     = torch.sigmoid(self.basis_da)
-        basis_rg     = torch.sigmoid(self.basis_rg)#/2+0.01
+        basis_rg     = torch.sigmoid(self.basis_rg)
         basis_sa     = torch.sigmoid(self.basis_sa)
         normal = F.normalize(self.normal, p=2, dim=-1)
         ptcloud = compute_ptcloud_from_depth(self.opt, depth, self.opt.cam_R, self.opt.cam_C, self.opt.cam_focal_length)    
@@ -373,7 +371,7 @@ class Trainer():
         cv2.imwrite(os.path.join(self.save_dir, 'optimized_normal.png'), (normal_save[:,:,::-1]*255).astype(np.uint8))
         
         
-        normal_from_depth = self.depth_to_normal(ptcloud)
+        normal_from_depth = depth_to_normal(ptcloud)
         cosine_similarity = 1 - mask[0]*F.cosine_similarity(normal[0], normal_from_depth, dim=-1)
         
         
@@ -397,7 +395,7 @@ class Trainer():
         torch.cuda.empty_cache()
         #================================================================================================
         # 1.Reflectance  
-        path = '/root/workspace/DDIR/calibration/visualization'
+        path = './calibration/visualization'
         sphere_normal = sio.loadmat(os.path.join(path, 'sphere_normal.mat'))
         sphere_normal = sphere_normal['Normal_gt'].astype(np.float32)
         sphere_mask = cv2.imread(os.path.join(path, 'sphere_mask.png'))/255
