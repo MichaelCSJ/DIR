@@ -14,7 +14,7 @@
 
 **Conference:** IEEE/CVF International Conference on Computer Vision (ICCV), 2025
 
-# 📊 Overview
+# 👀 Overview
 
 `DIR dataset` is a dataset for `Display Inverse Rendering (DIR)`. It contains assets captured from LCD & polarization-camera system.
 * **OLAT Images:** are capured under display superpixels, and can be used to simulate arbitrary display patterns.
@@ -43,7 +43,7 @@ Display inverse rendering uses a monitor as a per-pixel, programmable light sour
 <!-- ## 🚀 Steps to Get Started
 ### Step 1: Install Dependencies -->
 # 🚀 Get Started 
-### 💾 Installation
+### ⚙️ Installation
 
 ```bash
 git clone https://github.com/MichaelCSJ/DIR.git
@@ -52,7 +52,7 @@ conda env create -f environment.yml
 conda activate DIR
 ```
 
-### 📝 Dataset Preparation
+### 🗂️ Dataset Preparation
 Download the [DIR dataset](https://huggingface.co/datasets/SeokjunChoi/display-inverse-rendering-dataset) for perform our display inverse rendering baseline. It consists of 16 real-world objects with diverse shapes and materials under precisely calibrated directional lighting. There are some versions of dataset as **'DIR-basic'**, **'DIR-pms'**, **'DIR-hdr'**, and **'DIR-multi-distance'**.
 * **DIR-basic**: The basic version of the dataset released with the paper. It includes stereo polarized RAW images, RGB images from a reference view, and ground-truth surface normals and point clouds. All images are captured under a multi-light configuration projected through 16×9 superpixels on the display.
 ```
@@ -100,7 +100,7 @@ Download the [DIR dataset](https://huggingface.co/datasets/SeokjunChoi/display-i
 
 After downloading, place them under `data/` as the following directory tree.
 
-### 🧑‍🏫 Normal and basis BRDF Recovery
+### 🔥 Normal and basis BRDF Recovery
 To run the baseline, execute `train.py` with the following command:
 ```
 python train.py --name YOUR_SESSION_NAME --dataset_root YOUR_DATASET_PATH
@@ -112,6 +112,7 @@ python train.py --name YOUR_SESSION_NAME --dataset_root YOUR_DATASET_PATH --use_
 ```
 You can use [display patterns]() provided by `DDPS` for `YOUR_DISPLAY_PATTERNS`.
 Place display patterns under `patterns/` as the following directory tree.
+
 **Lighting Patterns (Initial)**: 
 <p align="center">
   <img src="./assets/learned_illum_initial.png">
@@ -124,7 +125,7 @@ Place display patterns under `patterns/` as the following directory tree.
 
 Once training is completed, a folder named `YYYYMMDD_HHMMSS` will be created inside the `/results/SESSION` directory, containing the TensorBoard logs, OLAT rendering results, and the fitted parameters for each object.
 
-### 🧑‍🏫  Novel Relighting (Optional, TBD)
+### 🖼️  Novel Relighting (Optional, TBD)
 Run relighting.py to render images under novel directional lightings based on recovered normal map and BRDF parameter maps.
 <!-- <p align="center">
   <img src="./.images/output.gif" width="400px">
