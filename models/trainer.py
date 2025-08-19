@@ -183,7 +183,10 @@ class Trainer():
             
             tv_weight = 20
             tv_term = total_variation_loss((-normal+1)/2)
-            loss_with_tv = OLAT_loss + tv_weight * tv_term
+            if self.opt.use_multiplexing:
+                loss_with_tv = rendering_loss + tv_weight * tv_term
+            else:
+                loss_with_tv = OLAT_loss + tv_weight * tv_term
             
             loss = (loss_with_tv)
             loss.backward()
@@ -297,7 +300,7 @@ class Trainer():
         
         #================================================================================================
         # Save parameters  
-        log_dir =os.path.join(self.save_dir,'log')
+        log_dir =os.path.join(self.save_dir,'parameters')
         os.makedirs(log_dir, exist_ok=True)
         torch.save(self.display_pattern, os.path.join(log_dir, f'{iter_str}_patterns.pth'))
         torch.save(self.depth.detach(), os.path.join(log_dir, f'{iter_str}_depth.pth'))

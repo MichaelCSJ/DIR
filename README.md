@@ -1,9 +1,9 @@
 <div align="center">
-<h1>A Real-world Display Inverse Rendering Dataset (ICCV 2025)</h1>
+<h1>A Real-world Display Inverse Rendering Dataset<br>(ICCV 2025)</h1>
 
 <a href="https://michaelcsj.github.io/DIR/"><img src="https://img.shields.io/badge/%F0%9F%8F%A0%20Project%20Page-gray.svg"></a> <!-- <a href="https://arxiv.org/pdf/2506.18882"><img src="https://img.shields.io/badge/arXiv-2506.18882-b31b1b.svg"></a> --> <a href="https://huggingface.co/datasets/SeokjunChoi/display-inverse-rendering-dataset"><img src="https://img.shields.io/badge/%F0%9F%A4%97%20Model_Card-Huggingface-orange"></a>
 
-[Seokjun Choi](https://scholar.google.com/citations?user=5FBYzP8AAAAJ&hl=en), [Hoon-Gyu Chung](https://github.com/houyuanchen111), [Yujin Jeon](), [Giljoo Nam](https://frozenburning.github.io/), [Seung-Hwan Baek](https://arlo0o.github.io/libohan.github.io/)
+[Seokjun Choi](https://michaelcsj.github.io/), [Hoon-Gyu Chung](https://sites.google.com/view/hoongyu-chung/home), [Yujin Jeon](), [Giljoo Nam](https://sites.google.com/view/gjnam), [Seung-Hwan Baek](https://www.shbaek.com/)
 
 
 </div>
@@ -83,7 +83,7 @@ Download the [DIR dataset](https://huggingface.co/datasets/SeokjunChoi/display-i
   │  ├──'point_cloud.npy' (unprojected pixel w.r.t. depth & focal length)
 ```
 
-* **DIR-pms**: This dataset follows the DiLiGeNT format and has the same composition as **DIR-basic**. It provides multi-light RGB images from the reference view along with related information and the ground-truth normal maps.
+* **DIR-pms**: This dataset follows the [DiLiGenT](https://sites.google.com/site/photometricstereodata/single) format and has the same composition as **DIR-basic**. It provides multi-light RGB images from the reference view along with related information and the ground-truth normal maps.
 
 ```
   ├── A [Suffix (default "PNG")]
@@ -108,24 +108,28 @@ python train.py --name YOUR_SESSION_NAME --dataset_root YOUR_DATASET_PATH
 By default, this code performs inverse rendering using multi-light images captured with an OLAT pattern.
 If you want to use a small number of multi-light images with a multiplexed display pattern, run the code as follows:
 ```
-python train.py --name YOUR_SESSION_NAME --dataset_root YOUR_DATASET_PATH --light_N NUM_LIGHTINGS --initial_light_pattern YOUR_DISPLAY_PATTERNS --num_basis_BRDFs NUM_BASIS
+python train.py --name YOUR_SESSION_NAME --dataset_root YOUR_DATASET_PATH --use_multiplexing True --initial_light_pattern YOUR_DISPLAY_PATTERNS
 ```
-`YOUR_DISPLAY_PATTERNS`에는 `DDPS`에서 제공하는 [디스플레이 패턴]()을 사용하는 법을 제시한다. 
+You can use [display patterns]() provided by `DDPS` for `YOUR_DISPLAY_PATTERNS`.
 Place display patterns under `patterns/` as the following directory tree.
-**Lighting Patterns**: (TBD)
-<!-- <p align="center">
-  <img src="./.images/lightingpatterns.png" width="400px">
-</p> -->
+**Lighting Patterns (Initial)**: 
+<p align="center">
+  <img src="./assets/learned_illum_initial.png">
+</p>
 
-학습이 끝나면, \resurts\SESSION 폴더 안에 'YYYYMMDD_HHMMSS' 디렉토리에  오브젝트별 OLAT 렌더링 결과, 학습된 파라미터들이 저장된다. (예시 사진, BRDF maps, rendered images)
+**Lighting Patterns (Learned)**: 
+<p align="center">
+  <img src="./assets/learned_illum_optimized.png">
+</p>
 
+Once training is completed, a folder named `YYYYMMDD_HHMMSS` will be created inside the `/results/SESSION` directory, containing the TensorBoard logs, OLAT rendering results, and the fitted parameters for each object.
 
 ### 🧑‍🏫  Novel Relighting (Optional, TBD)
 Run relighting.py to render images under novel directional lightings based on recovered normal map and BRDF parameter maps.
 <!-- <p align="center">
   <img src="./.images/output.gif" width="400px">
 </p> -->
-You can also use the provided code (`relighting.py`) for relighting the object under novel directional lights based on the recovered attributes. Follow the instructions displayed at the end of the prompt to use it. It should look like this.
+~~You can also use the provided code (`relighting.py`) for relighting the object under novel directional lights based on the recovered attributes. Follow the instructions displayed at the end of the prompt to use it. It should look like this.~~
 
 To output .avi video:
 ```

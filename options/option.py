@@ -11,6 +11,7 @@ class Options:
         self.parser.add_argument('--name', type=str, default='train')
         self.parser.add_argument('--num_threads', type=int, default=0)
         self.parser.add_argument('--batch_size', type=int, default=1)
+        self.parser.add_argument('--use_multiplexing', type=bool, default=False)
         
         self.parser.add_argument('--num_basis_BRDFs', type=int, default=7)        
         self.parser.add_argument('--BRDF_fitting_interation', type=int, default=1000)    
