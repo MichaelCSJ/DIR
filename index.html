@@ -19,6 +19,10 @@
   <script defer src="./static/js/fontawesome.all.min.js"></script>
   <script src="./static/js/index.js"></script>
 
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@0.9.4/css/bulma.min.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+
+
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <style>
     .container_gif {
@@ -32,7 +36,206 @@
       width: 100%; /* 이미지 크기 조정 */
       height: auto;
       border-radius: 10px; /* 이미지의 모서리를 둥글게 */
+    }  /* 표를 감싸는 컨테이너: 가로 스크롤 전용 */
+  .orb-table-container {
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  /* 기본 테이블 스타일 (Stanford-ORB 느낌) */
+  table.orb-table {
+    width: 100%;
+    border-collapse: separate;
+    border-spacing: 0;
+    font-size: 14px;
+    line-height: 1.5;
+    min-width: 900px; /* 컬럼이 많을 때 스크롤 유도 */
+  }
+
+  .orb-table caption {
+    caption-side: top;
+    text-align: left;
+    font-weight: 600;
+    color: #444;
+    margin-bottom: 6px;
+  }
+
+  .orb-table th,
+  .orb-table td {
+    padding: 10px 12px;
+    border-bottom: 1px solid #eaecef; /* 옅은 회색 구분선 */
+    white-space: nowrap; /* 긴 헤더/값 줄바꿈 방지 */
+  }
+
+  .orb-table th {
+    background: #fafbfc;       /* 연한 헤더 배경 */
+    font-weight: 600;
+    color: #24292e;
+    text-align: left;
+    border-bottom: 2px solid #eaecef;
+  }
+
+  /* 지그재그 줄무늬 */
+  .orb-table tbody tr:nth-child(odd) {
+    background: #fcfcfd;
+  }
+
+  /* 행 호버 강조 */
+  .orb-table tbody tr:hover {
+    background: #f6f8fa;
+  }
+
+  /* 숫자 열 정렬/자간: 깔끔한 숫자 정렬 */
+  .orb-table td.num {
+    text-align: right;
+    font-variant-numeric: tabular-nums;
+  }
+
+  /* 헤더 강조 */
+  .orb-table th:nth-child(2) {
+    background-color: #ffeeba;   /* 연한 노란색 */
+    color: #000;
+    font-weight: 700;
+  }
+
+  /* 데이터 셀 강조 */
+  .orb-table td:nth-child(2) {
+    background-color: #fff3cd;   /* 더 옅은 노란색 */
+    font-weight: 600;
+    text-align: center;          /* 숫자라면 가운데 정렬 */
+  }
+  /* 좁은 화면에서 조금 더 촘촘하게 */
+  @media (max-width: 640px) {
+    table.orb-table { font-size: 13px; }
+    .orb-table th, .orb-table td { padding: 8px 10px; }
+  }
+  .orb-carousel {
+    position: relative;
+    max-width: 100%;
+    margin: 16px 0;
+  }
+  .orb-caption {
+    display: block;
+    text-align: left;
+    font-weight: 600;
+    color: #444;
+    margin: 6px 0 10px;
+  }
+  .orb-viewport {
+    overflow: hidden;
+    border: 1px solid #eaecef;
+    border-radius: 6px;
+  }
+  .orb-track {
+    display: flex;
+    transition: transform 0.4s ease;
+    will-change: transform;
+  }
+  .orb-slide {
+    flex: 0 0 100%;
+    display: flex;
+    justify-content: center;   /* 이미지 가운데 정렬 */
+    align-items: center;
+  }
+  .orb-slide img {
+  max-height: 80%;   /* 이미지 가로 크기 비율 조정 */
+  width: auto;
+  border: 1px solid #eaecef;
+  border-radius: 6px;
+  }
+  /* Bulma 버튼 위치 조정 */
+  .orb-arrow {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+  }
+  .orb-arrow.prev { left: 10px; }
+  .orb-arrow.next { right: 10px; }
+
+  /* 점(dot) 네비게이션 */
+  .orb-dots {
+    display: flex;
+    gap: 6px;
+    justify-content: center;
+    margin-top: 10px;
+  }
+  .orb-dot {
+    width: 8px; height: 8px;
+    border-radius: 50%;
+    border: 1px solid #c9d1d9;
+    background: #fff;
+    cursor: pointer;
+  }
+  .orb-dot[aria-current="true"] {
+    background: #6e7781;
+    border-color: #6e7781;
+  }
+  /* 레이아웃: 좌/우 2분할 */
+  .two-up-carousel {
+    display: grid;
+    grid-template-columns: 1fr 1fr;  /* 좌우 동일 너비 */
+    gap: 16px;
+    align-items: end;
+  }
+
+  /* 왼쪽 고정 이미지 박스 */
+  .fixed-panel {
+    border: 1px solid #eaecef;
+    border-radius: 6px;
+    padding: 8px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background: #fff;
+  }
+
+  /* 오른쪽 캐러셀 */
+  .carousel-panel {
+    position: relative;
+    border: 1px solid #eaecef;
+    border-radius: 6px;
+    background: #fff;
+    overflow: hidden; /* 뷰포트 */
+  }
+
+  .carousel-track {
+    display: flex;
+    transition: transform 0.35s ease;
+    will-change: transform;
+  }
+
+  .carousel-slide {
+    flex: 0 0 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+
+  /* 이미지 공통 스타일 (높이 맞추기) */
+  .fixed-panel img,
+  .carousel-slide img {
+    max-width: 100%;
+    max-height: 420px;      /* 필요 시 높이 조정 */
+    height: auto;
+    object-fit: contain;
+    border-radius: 4px;
+  }
+
+  /* 화살표 버튼 (Bulma 활용) */
+  .carousel-arrow {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+  }
+  .carousel-arrow.prev { left: 10px; }
+  .carousel-arrow.next { right: 10px; }
+
+  /* 작은 화면에서는 세로 스택 */
+  @media (max-width: 768px) {
+    .two-up-carousel {
+      grid-template-columns: 1fr;
     }
+  }
   </style>
 
   <!-- MathJax -->
@@ -150,31 +353,370 @@
 <section class="section">
 <div class="container is-max-desktop">
 
-<!-- <div class="content">
-  <p><img src="./static/image/teaser.png" alt="Figure 1" /></p> -->
 
 <!-- Using HTML to center the abstract -->
 <div class="columns is-centered has-text-centered">
     <div class="column is-four-fifths">
-        <h2>Abstract</h2>
-        <div class="content has-text-justified">
-<p>
-Inverse rendering aims to reconstruct geometry and reflectance from captured images. 
-Display-camera imaging systems offer unique advantages for this task: each pixel can easily function as a programmable point light source, and the polarized light emitted by LCD displays facilitates diffuse-specular separation. 
-Despite these benefits, there is currently no public real-world dataset captured using display-camera systems, unlike other setups such as light stages. 
-This absence hinders the development and evaluation of display-based inverse rendering methods.
-In this paper, we introduce the first real-world dataset for display-based inverse rendering. 
-To achieve this, we construct and calibrate an imaging system comprising an LCD display and stereo polarization cameras. 
-We then capture a diverse set of objects with diverse geometry and reflectance under one-light-at-a-time (OLAT) display patterns. 
-We also provide high-quality ground-truth geometry. Our dataset enables the synthesis of captured images under arbitrary display patterns and different noise levels. 
-Using this dataset, we evaluate the performance of existing photometric stereo and inverse rendering methods, and provide a simple, yet effective baseline for display inverse rendering, outperforming state-of-the-art inverse rendering methods.
-</p>
+      <div class="content has-text-justified">
+      <h2>TL;DR</h2>
+  <p>
+    We present a novel real-world display inverse rendering dataset, <strong>DIR</strong>.
+    The DIR dataset consists of:
+  </p>
+      <ul>
+        <li>144 images of 16 objects captured under OLAT lighting</li>
+        <li>Ground truth surface normal map</li>
+        <li>Polarization RAW signals</li>
+        <li>Stereo pair images</li>
+        <li>Carefully-calibrated light informations</li>
+      </ul>
+  <p>
+    We provide the dataset in an organized format, along with benchmark results for photometric stereo, 
+    single-view & multi-light inverse rendering, and baseline code for display inverse rendering. 
+    Please refer to our <a href="https://github.com/MichaelCSJ/DIR">GitHub page</a> for details.
+  </p>
+
+  
+  <h2>Gallery</h2>
+<div class="content">
+  <p><img src="./static/image/data_thumbnail.png" alt="Figure 1" /></p>
+
+  <h2>Overview</h2>
+  <p>
+    The capture system consists of an LCD monitor as the light source and a stereo polarized camera for imaging. 
+    For each object, we sequentially projected 144 (16 × 9) OLAT patterns and captured them. 
+    The scanned mesh was then aligned to the scene pose to obtain ground truth 
+    depth and normal maps.
+  </p>
+
+<div class="two-up-carousel" aria-label="Two-up image viewer">
+  <!-- 왼쪽: 이미지 0 고정 -->
+  <div class="fixed-panel">
+    <img src="./static/image/system0.png" alt="Reference Image (0)">
+  </div>
+
+  <!-- 오른쪽: 1,2,3 캐러셀 -->
+  <div class="carousel-panel" id="rightCarousel">
+    <div class="carousel-track" id="rightTrack">
+      <div class="carousel-slide"><img src="./static/image/system1.png" alt="Image 1"></div>
+      <div class="carousel-slide"><img src="./static/image/system2.png" alt="Image 2"></div>
+      <div class="carousel-slide"><img src="./static/image/system3.png" alt="Image 3"></div>
+    </div>
+
+    <button class="button is-light is-rounded carousel-arrow prev" id="rightPrev" aria-label="Previous">
+      <span class="icon"><i class="fas fa-chevron-left"></i></span>
+    </button>
+    <button class="button is-light is-rounded carousel-arrow next" id="rightNext" aria-label="Next">
+      <span class="icon"><i class="fas fa-chevron-right"></i></span>
+    </button>
+  </div>
+</div>
+
+  
+  <h2>Results (Photometric Stereo)</h2>
+  
+<div class="orb-table-container">
+    <!-- <caption>Quantitative Results</caption> -->
+  <table class="orb-table">
+    <thead> 
+  <tr>
+    <th></th>
+    <th>Avg.</th>
+    <th>Elephant</th>
+    <th>Owl</th>
+    <th>Cat</th>
+    <th>Frog</th>
+    <th>Robot</th>
+    <th>Pig</th>
+    <th>Chicken</th>
+    <th>Girl</th>
+    <th>Boy</th>
+    <th>Nefertiti</th>
+    <th>Trex</th>
+    <th>Gnome</th>
+    <th>Horse</th>
+    <th>Snowman</th>
+    <th>Plaster</th>
+    <th>Objet</th>
+  </tr></thead>
+  <tbody> 
+  <tr>
+    <td>Woodham</td>
+    <td>23.14</td>
+    <td>27.02</td>
+    <td>26.60</td>
+    <td>21.05</td>
+    <td>21.58</td>
+    <td>28.18</td>
+    <td>17.02</td>
+    <td>18.39</td>
+    <td>24.86</td>
+    <td>21.44</td>
+    <td>37.03</td>
+    <td>18.98</td>
+    <td>19.83</td>
+    <td>19.27</td>
+    <td>32.21</td>
+    <td>19.56</td>
+    <td>17.28</td>
+  </tr>
+  <tr>
+    <td>PS-FCN</td>
+    <td>17.29</td>
+    <td>20.26</td>
+    <td>15.17</td>
+    <td>10.61</td>
+    <td>19.15</td>
+    <td>16.68</td>
+    <td>15.80</td>
+    <td>11.91</td>
+    <td>25.96</td>
+    <td>22.27</td>
+    <td>20.03</td>
+    <td>18.22</td>
+    <td>19.33</td>
+    <td>17.48</td>
+    <td>18.75</td>
+    <td>17.25</td>
+    <td>7.73</td>
+  </tr>
+  <!-- <tr>
+    <td>PS-Transformer</td>
+    <td>30</td>
+    <td>디자이너</td>
+  </tr> -->
+  <tr>
+    <td>SRSH</td>
+    <td>25.25</td>
+    <td>26.21</td>
+    <td>18.49</td>
+    <td>16.95</td>
+    <td>23.42</td>
+    <td>19.09</td>
+    <td>32.76</td>
+    <td>17.88</td>
+    <td>37.14</td>
+    <td>31.19</td>
+    <td>23.97</td>
+    <td>25.05</td>
+    <td>27.44</td>
+    <td>27.70</td>
+    <td>27.96</td>
+    <td>26.93</td>
+    <td>21.87</td>
+  </tr>
+  <tr>
+    <td>SCPS-NIR</td>
+    <td>24.17</td>
+    <td>22.75</td>
+    <td>7.93</td>
+    <td>8.97</td>
+    <td>16.28</td>
+    <td>17.87</td>
+    <td>34.89</td>
+    <td>10.43</td>
+    <td>45.12</td>
+    <td>37.18</td>
+    <td>52.97</td>
+    <td>21.85</td>
+    <td>16.64</td>
+    <td>48.98</td>
+    <td>15.65</td>
+    <td>21.30</td>
+    <td>7.94</td>
+  </tr>
+  <tr>
+    <td>UniPS (M=64)</td>
+    <td>23.27</td>
+    <td>24.93</td>
+    <td>18.33</td>
+    <td>19.54</td>
+    <td>24.99</td>
+    <td>22.18</td>
+    <td>25.72</td>
+    <td>23.07</td>
+    <td>26.38</td>
+    <td>30.65</td>
+    <td>28.71</td>
+    <td>21.86</td>
+    <td>24.48</td>
+    <td>26.72</td>
+    <td>18.89</td>
+    <td>19.43</td>
+    <td>16.39</td>
+  </tr>
+  <tr>
+    <td>SDM-UniPS (M=64)</td>
+    <td>14.89</td>
+    <td>18.83</td>
+    <td>14.37</td>
+    <td>9.70</td>
+    <td>14.12</td>
+    <td>14.85</td>
+    <td>15.33</td>
+    <td>16.05</td>
+    <td>14.99</td>
+    <td>15.22</td>
+    <td>22.73</td>
+    <td>14.58</td>
+    <td>13.46</td>
+    <td>16.93</td>
+    <td>15.18</td>
+    <td>12.55</td>
+    <td>9.38</td>
+  </tr></tbody>
+</table>
+</div>  
+<br />
+  
+
+<div class="orb-carousel" role="region" aria-label="Qualitative Results">
+  <span class="orb-caption">Qualitative Results</span>
+
+  <div class="orb-viewport">
+    <div class="orb-track" id="orbTrack">
+      <div class="orb-slide">
+        <img src="./static/image/all_ps_wo_bg_1.png" alt="Figure 3">
+      </div>
+      <div class="orb-slide">
+        <img src="./static/image/all_ps_wo_bg_2.png" alt="Figure 4">
+      </div>
+      <div class="orb-slide">
+        <img src="./static/image/all_ps_wo_bg_3.png" alt="Figure 5">
+      </div>
+    </div>
+
+    <!-- Bulma 버튼 + 아이콘 -->
+    <button class="button is-light is-rounded orb-arrow prev" id="orbPrev" aria-label="Previous image">
+      <span class="icon"><i class="fas fa-chevron-left"></i></span>
+    </button>
+    <button class="button is-light is-rounded orb-arrow next" id="orbNext" aria-label="Next image">
+      <span class="icon"><i class="fas fa-chevron-right"></i></span>
+    </button>
+  </div>
+
+  <div class="orb-dots" id="orbDots" aria-label="Slide dots"></div>
+</div>
+        </div>
+    </div>
+</div>
+
         </div>
     </div>
 </div>
 
 <hr />
 
+
+<script>
+  (function () {
+    // 오른쪽 캐러셀만 제어
+    const track = document.getElementById('rightTrack');
+    const slides = Array.from(track.children);
+    const prevBtn = document.getElementById('rightPrev');
+    const nextBtn = document.getElementById('rightNext');
+
+    let index = 0;                    // 0 -> image_1, 1 -> image_2, 2 -> image_3
+    const last = slides.length - 1;
+
+    function update() {
+      track.style.transform = `translateX(-${index * 100}%)`;
+    }
+    function go(i) {
+      index = (i + slides.length) % slides.length; // 순환
+      update();
+    }
+
+    prevBtn.addEventListener('click', () => go(index - 1));
+    nextBtn.addEventListener('click', () => go(index + 1));
+
+    // 키보드(→/←) 지원: 오른쪽 패널 포커스 시만 동작
+    const panel = document.getElementById('rightCarousel');
+    panel.tabIndex = 0;
+    panel.addEventListener('keydown', (e) => {
+      if (e.key === 'ArrowLeft') go(index - 1);
+      if (e.key === 'ArrowRight') go(index + 1);
+    });
+
+    update();
+  })();
+</script>
+
+<script>
+document.addEventListener("DOMContentLoaded", function() {
+  const table = document.querySelector(".orb-table");
+  const rows = Array.from(table.querySelectorAll("tbody tr"));
+  const cols = table.querySelectorAll("thead th").length;
+
+  for (let col = 2; col <= cols; col++) {  // 1열은 method명이니 2열부터
+    let values = [];
+
+    rows.forEach(row => {
+      const cell = row.querySelector(`td:nth-child(${col})`);
+      if (!cell) return;
+      const val = parseFloat(cell.innerText);
+      if (!isNaN(val)) {
+        values.push({cell, val});
+      }
+    });
+
+    // 값이 2개 이상 있는 경우에만 처리
+    if (values.length > 1) {
+      // 오름차순 정렬
+      values.sort((a, b) => a.val - b.val);
+
+      // 최솟값 강조 (빨강 + 굵게)
+      values[0].cell.style.fontWeight = "bold";
+      values[0].cell.style.color = "red";
+
+      // 두 번째로 작은 값 밑줄
+      values[1].cell.style.textDecoration = "underline";
+      values[1].cell.style.fontWeight = "bold";
+    }
+  }
+});
+</script>
+
+
+<script>
+  (function () {
+    const track = document.getElementById('orbTrack');
+    const slides = Array.from(track.children);
+    const prevBtn = document.getElementById('orbPrev');
+    const nextBtn = document.getElementById('orbNext');
+    const dotsWrap = document.getElementById('orbDots');
+
+    let index = 0;
+
+    slides.forEach((_, i) => {
+      const b = document.createElement('button');
+      b.className = 'orb-dot';
+      b.type = 'button';
+      b.setAttribute('aria-label', `Go to slide ${i + 1}`);
+      if (i === 0) b.setAttribute('aria-current', 'true');
+      b.addEventListener('click', () => go(i));
+      dotsWrap.appendChild(b);
+    });
+
+    const dots = Array.from(dotsWrap.children);
+
+    function update() {
+      track.style.transform = `translateX(-${index * 100}%)`;
+      dots.forEach((d, i) => {
+        if (i === index) d.setAttribute('aria-current', 'true');
+        else d.removeAttribute('aria-current');
+      });
+    }
+
+    function go(i) {
+      index = (i + slides.length) % slides.length;
+      update();
+    }
+
+    prevBtn.addEventListener('click', () => go(index - 1));
+    nextBtn.addEventListener('click', () => go(index + 1));
+  })();
+</script>
 <!-- > Note: This is an example of a Jekyll-based project website template: [Github link](https://github.com/shunzh/project_website).\
 > The following content is generated by ChatGPT. The figure is manually added. -->
 
@@ -267,14 +809,14 @@ He used the concept of a universal Turing machine to prove that the set of compu
 <!-- ## Significance
 Turing's paper laid the foundation for the theory of computation and had a profound impact on the development of computer science. The Turing machine became a fundamental concept in theoretical computer science, serving as a theoretical model for studying the limits and capabilities of computation. Turing's work also influenced the development of programming languages, algorithms, and the design of modern computers. -->
 
-<!-- <h2 id="citation">Citation</h2>
-<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>@article{choi2023differentiable,
-  title={Differentiable Display Photometric Stereo},
-  author={Choi, Seokjun and Yoon, Seungwoo and Nam, Giljoo and Lee, Seungyong and Baek, Seung-Hawn},
-  journal={CVPR},
-  year={2024}
+<h2 id="citation">Citation</h2>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>@article{choi2025real,
+  title={A Real-world Display Inverse Rendering Dataset},
+  author={Choi, Seokjun and Chung, Hoon-Gyu and Jeon, Yujin and Nam, Giljoo and Baek, Seung-Hawn},
+  journal={ICCV},
+  year={2025}
 }
-</code></pre></div></div> -->
+</code></pre></div></div>
 
 </div>
 
